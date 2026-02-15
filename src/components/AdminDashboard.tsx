@@ -15,7 +15,14 @@ import { useAppContext } from '../contexts/AppContext';
 interface AdminDashboardProps {}
 
 export function AdminDashboard() {
-  const { allCars, setAllCars, testimonials, setTestimonials, packages, setPackages } = useAppContext();
+  const { 
+    allCars, setAllCars, 
+    testimonials, setTestimonials, 
+    packages, setPackages, 
+    addPackage, updatePackage, deletePackage,
+    addCar, updateCar, deleteCar,
+    addTestimonial, updateTestimonial, deleteTestimonial
+  } = useAppContext();
 
   // Placeholder for booking data to calculate revenue
   const [bookings, setBookings] = useState<any[]>([
@@ -62,14 +69,14 @@ export function AdminDashboard() {
   const [isPackageModalOpen, setIsPackageModalOpen] = useState(false);
   const [packageToEdit, setPackageToEdit] = useState<Package | null>(null);
 
-  const handleAddCar = (newCar: CarType) => {
-    setAllCars(prevCars => [...prevCars, { ...newCar, status: 'Available' }]);
+  const handleAddCar = async (newCar: CarType) => {
+    await addCar(newCar);
+    setIsAddCarModalOpen(false);
   };
 
-  const handleEditCar = (editedCar: CarType) => {
-    setAllCars(prevCars =>
-      prevCars.map(car => (car.id === editedCar.id ? editedCar : car))
-    );
+  const handleEditCar = async (editedCar: CarType) => {
+    await updateCar(editedCar);
+    setIsEditCarModalOpen(false);
   };
 
   const handleOpenEditModal = (car: CarType) => {
@@ -77,16 +84,19 @@ export function AdminDashboard() {
     setIsEditCarModalOpen(true);
   };
 
-  const handleDeleteCar = (carId: string) => {
-    setAllCars(prevCars => prevCars.filter(car => car.id !== carId));
+  const handleDeleteCar = async (carId: string) => {
+    if (window.confirm('Are you sure you want to delete this car?')) {
+      await deleteCar(carId);
+    }
   };
 
-  const handleSaveTestimonial = (testimonial: Testimonial) => {
+  const handleSaveTestimonial = async (testimonial: Testimonial) => {
     if (testimonialToEdit) {
-      setTestimonials(prev => prev.map(t => t.id === testimonial.id ? testimonial : t));
+      await updateTestimonial(testimonial);
     } else {
-      setTestimonials(prev => [...prev, testimonial]);
+      await addTestimonial(testimonial);
     }
+    setIsTestimonialModalOpen(false);
   };
 
   const handleOpenAddTestimonialModal = () => {
@@ -99,16 +109,19 @@ export function AdminDashboard() {
     setIsTestimonialModalOpen(true);
   };
 
-  const handleDeleteTestimonial = (id: string) => {
-    setTestimonials(prev => prev.filter(t => t.id !== id));
+  const handleDeleteTestimonial = async (id: string) => {
+    if (window.confirm('Are you sure you want to delete this testimonial?')) {
+      await deleteTestimonial(id);
+    }
   };
 
-  const handleSavePackage = (pkg: Package) => {
+  const handleSavePackage = async (pkg: Package) => {
     if (packageToEdit) {
-      setPackages(prev => prev.map(p => p.id === pkg.id ? pkg : p));
+      await updatePackage(pkg);
     } else {
-      setPackages(prev => [...prev, pkg]);
+      await addPackage(pkg);
     }
+    setIsPackageModalOpen(false);
   };
 
   const handleOpenAddPackageModal = () => {
@@ -121,8 +134,10 @@ export function AdminDashboard() {
     setIsPackageModalOpen(true);
   };
 
-  const handleDeletePackage = (id: string) => {
-    setPackages(prev => prev.filter(p => p.id !== id));
+  const handleDeletePackage = async (id: string) => {
+    if (window.confirm('Are you sure you want to delete this package?')) {
+      await deletePackage(id);
+    }
   };
 
   const stats = [
