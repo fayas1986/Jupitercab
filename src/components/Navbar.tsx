@@ -56,7 +56,7 @@ export function Navbar({ onProfileClick }: NavbarProps) {
               "text-2xl font-bold transition-all duration-300 bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 group-hover:tracking-wider", 
               scrolled ? "text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600" : "text-white"
             )}>
-              Jupiter
+              Jupiter Tours & Travels
             </span>
           </div>
 

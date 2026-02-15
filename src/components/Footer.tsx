@@ -9,7 +9,7 @@ export function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <Car className="w-8 h-8 text-blue-500" />
-              <span className="text-2xl font-bold text-white">Jupiter</span>
+              <span className="text-2xl font-bold text-white">Jupiter Tours & Travels</span>
             </div>
             <p className="text-gray-400 mb-4">
               Your trusted partner for premium car rentals. Experience luxury and comfort on every journey.
@@ -55,7 +55,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
-          <p>&copy; 2026 Jupiter. All rights reserved.</p>
+          <p>&copy; 2026 Jupiter Tours & Travels. All rights reserved.</p>
         </div>
       </div>
     </footer>
