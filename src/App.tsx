@@ -15,6 +15,7 @@ import { isAdminUser } from "./lib/admin";
 import { api } from "./lib/api";
 import { useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 const queryClient = new QueryClient();
 
@@ -86,6 +87,7 @@ const App = () => (
             />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <SpeedInsights />
         </AppProvider>
       </TooltipProvider>
     </QueryClientProvider>
