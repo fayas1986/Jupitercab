@@ -2,14 +2,22 @@ import { Package } from '../types/package';
 import { Car } from '../types/car';
 import { Testimonial } from '../types/testimonial';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = `${window.location.protocol}//${window.location.hostname}:5000/api`;
 
 export const api = {
   // Packages
   getPackages: async (): Promise<Package[]> => {
-    const response = await fetch(`${API_URL}/packages`);
-    if (!response.ok) throw new Error('Failed to fetch packages');
-    return response.json();
+    try {
+      const response = await fetch(`${API_URL}/packages`);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to fetch packages: ${response.status} ${response.statusText} - ${errorText}`);
+      }
+      return response.json();
+    } catch (error) {
+      console.error('API Error (getPackages):', error);
+      throw error;
+    }
   },
 
   createPackage: async (pkg: Omit<Package, 'id'>): Promise<Package> => {
@@ -105,5 +113,16 @@ export const api = {
       method: 'DELETE',
     });
     if (!response.ok) throw new Error('Failed to delete testimonial');
+  },
+
+  // Users
+  syncUser: async (user: { name: string; email: string; phone?: string; role?: string }) => {
+    const response = await fetch(`${API_URL}/users/sync`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(user),
+    });
+    if (!response.ok) throw new Error('Failed to sync user');
+    return response.json();
   },
 };

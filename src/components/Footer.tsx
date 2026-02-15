@@ -48,7 +48,7 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-5 h-5 flex-shrink-0" />
-                <span>support@jupiter.com</span>
+                <span>jupitercab1@gmail.com</span>
               </li>
             </ul>
           </div>

@@ -1,4 +1,4 @@
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Phone } from 'lucide-react';
 
 export function Hero() {
   const scrollToCars = () => {
@@ -26,7 +26,7 @@ export function Hero() {
             Premium car rentals at unbeatable prices. Experience the freedom of the road with our diverse fleet of luxury and economy vehicles.
           </p>
           
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
             <button 
               onClick={scrollToCars}
               className="group bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-2"
@@ -40,6 +40,17 @@ export function Hero() {
             >
               View Packages
             </button>
+          </div>
+
+          <div className="flex items-center justify-center gap-2 text-white/90 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+            <span className="text-lg font-medium">Contact Us:</span>
+            <a 
+              href="tel:+919791289822" 
+              className="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md px-6 py-3 rounded-full transition-all duration-300 border border-white/20 hover:border-white/40"
+            >
+              <Phone className="w-5 h-5 text-blue-400" />
+              <span className="text-xl font-bold tracking-wide">+91 97912 89822</span>
+            </a>
           </div>
         </div>
       </div>

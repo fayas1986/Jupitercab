@@ -215,11 +215,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const data = await api.getPackages();
       setPackages(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching packages:', error);
       toast({
         title: 'Error',
-        description: 'Failed to fetch packages from server',
+        description: `Failed to fetch packages: ${error.message || 'Unknown error'}`,
         variant: 'destructive',
       });
     }
