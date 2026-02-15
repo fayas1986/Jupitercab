@@ -34,6 +34,16 @@ pool.query('SELECT NOW()', (err, res) => {
   }
 });
 
+// Health Check
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    env: process.env.NODE_ENV,
+    dbConfigured: !!process.env.DATABASE_URL
+  });
+});
+
 // Packages Routes
 
 // GET all packages
