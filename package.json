@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "start": "node api/index.js",
+    "server": "node api/index.js",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
