@@ -20,7 +20,7 @@ export function Hero() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center">
         <div className="animate-fade-in-up">
           <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-8 tracking-tight leading-tight drop-shadow-lg">
-            Find Your <span className="text-blue-500">Perfect</span> Ride
+            Find Your <span className="text-blue-500">Perfect</span> Ride in Rameswaram
           </h1>
           <p className="text-xl md:text-2xl text-gray-200 mb-10 max-w-3xl mx-auto leading-relaxed drop-shadow-md">
             Premium car rentals at unbeatable prices. Experience the freedom of the road with our diverse fleet of luxury and economy vehicles.
