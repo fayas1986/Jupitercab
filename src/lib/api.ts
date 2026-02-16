@@ -2,9 +2,7 @@ import { Package } from '../types/package';
 import { Car } from '../types/car';
 import { Testimonial } from '../types/testimonial';
 
-const API_URL = import.meta.env.PROD 
-  ? '/api' 
-  : `${window.location.protocol}//${window.location.hostname}:5000/api`;
+const API_URL = '/api';
 
 export const api = {
   // Packages

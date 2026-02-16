@@ -13,7 +13,14 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors());
+// Enable CORS with explicit options
+app.use(cors({
+  origin: true, // Reflect the request origin
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
 app.use(express.json({ limit: '50mb' })); // Increase limit for image uploads
 
 const { Pool } = pg;
@@ -382,28 +389,31 @@ app.delete(['/api/testimonials/:id', '/testimonials/:id'], async (req, res) => {
 // Sync user from Clerk
 app.post(['/api/users/sync', '/users/sync'], async (req, res) => {
   const { name, email, phone, role } = req.body;
+  console.log('Syncing user:', { name, email, phone, role });
   try {
     // Check if user exists
     const checkRes = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     
     if (checkRes.rows.length > 0) {
       // Update existing user
+      console.log('Updating existing user:', email);
       const updateRes = await pool.query(
         `UPDATE users SET name = $1, phone = $2, role = $3 WHERE email = $4 RETURNING *`,
         [name, phone, role || 'user', email]
       );
-      return res.json(updateRes.rows[0]);
+      res.json(updateRes.rows[0]);
     } else {
       // Create new user
+      console.log('Creating new user:', email);
       const insertRes = await pool.query(
         `INSERT INTO users (name, email, phone, role) VALUES ($1, $2, $3, $4) RETURNING *`,
         [name, email, phone, role || 'user']
       );
-      return res.json(insertRes.rows[0]);
+      res.json(insertRes.rows[0]);
     }
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Server error' });
+    console.error('Error syncing user:', err);
+    res.status(500).json({ error: 'Server error', details: err.message });
   }
 });
 
