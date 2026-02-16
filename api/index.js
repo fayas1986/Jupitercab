@@ -27,7 +27,16 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
-  }
+  },
+  max: 20, // set pool max size to 20
+  idleTimeoutMillis: 30000, // close idle clients after 30 seconds
+  connectionTimeoutMillis: 10000, // return an error after 10 seconds if connection could not be established
+});
+
+// Add error handler for idle clients
+pool.on('error', (err, client) => {
+  console.error('Unexpected error on idle client', err);
+  // process.exit(-1); // Do not exit, let the pool reconnect
 });
 
 // Middleware to normalize paths for Vercel

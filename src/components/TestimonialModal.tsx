@@ -101,6 +101,34 @@ export function TestimonialModal({ isOpen, onClose, onSave, testimonialToEdit }:
             />
           </div>
 
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Photo (Optional)</label>
+            <div className="flex items-center gap-4">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      setFormData(prev => ({ ...prev, avatar: reader.result as string }));
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }}
+                className="w-full p-2 border rounded-lg"
+              />
+              {formData.avatar && formData.avatar.length > 2 && (
+                <img 
+                  src={formData.avatar} 
+                  alt="Preview" 
+                  className="w-12 h-12 rounded-full object-cover border"
+                />
+              )}
+            </div>
+          </div>
+
           <div className="flex justify-end gap-3 mt-6">
             <button
               type="button"

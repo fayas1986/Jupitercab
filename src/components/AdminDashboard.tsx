@@ -239,6 +239,7 @@ export function AdminDashboard() {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Photo</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Feedback</th>
@@ -248,6 +249,19 @@ export function AdminDashboard() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {testimonials.map((testimonial) => (
                   <tr key={testimonial.id}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {testimonial.avatar && (testimonial.avatar.startsWith('data:') || testimonial.avatar.startsWith('http')) ? (
+                        <img 
+                          src={testimonial.avatar} 
+                          alt={testimonial.name} 
+                          className="w-10 h-10 rounded-full object-cover border"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
+                          {testimonial.avatar || testimonial.name.substring(0, 2).toUpperCase()}
+                        </div>
+                      )}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{testimonial.name}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{testimonial.rating} Stars</td>
                     <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">{testimonial.text}</td>
