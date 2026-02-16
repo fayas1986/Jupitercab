@@ -22,8 +22,8 @@ export function Hero() {
           <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-8 tracking-tight leading-tight drop-shadow-lg">
             Find Your <span className="text-blue-500">Perfect</span> Ride in Rameswaram
           </h1>
-          <p className="text-xl md:text-2xl text-gray-200 mb-10 max-w-3xl mx-auto leading-relaxed drop-shadow-md">
-            Premium car rentals at unbeatable prices. Experience the freedom of the road with our diverse fleet of luxury and economy vehicles.
+          <p className="text-xl md:text-2xl text-gray-200 mb-10 max-w-4xl mx-auto leading-relaxed drop-shadow-md text-balance">
+            Jupiter Cab provides reliable taxi and car rental services in Rameswaram. We offer airport transfers, local sightseeing, temple visits, and outstation trips with professional drivers and transparent pricing.
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
