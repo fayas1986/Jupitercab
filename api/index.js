@@ -18,11 +18,26 @@ app.use(express.json({ limit: '50mb' })); // Increase limit for image uploads
 
 const { Pool } = pg;
 
+// Add check for DATABASE_URL
+if (!process.env.DATABASE_URL) {
+  console.warn('DATABASE_URL environment variable is missing!');
+}
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   }
+});
+
+// Middleware to normalize paths for Vercel
+app.use((req, res, next) => {
+  // If request URL starts with /api but is not matched, try stripping /api
+  // This helps if Vercel passes full path but routes are defined without /api
+  // But here we define routes WITH /api so it should be fine.
+  // However, let's log the path for debugging (in server logs)
+  console.log(`${req.method} ${req.url}`);
+  next();
 });
 
 // Test connection
@@ -35,7 +50,7 @@ pool.query('SELECT NOW()', (err, res) => {
 });
 
 // Health Check
-app.get('/api/health', (req, res) => {
+app.get(['/api/health', '/health'], (req, res) => {
   res.json({ 
     status: 'ok', 
     timestamp: new Date().toISOString(),
@@ -44,10 +59,15 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Root route for sanity check
+app.get('/', (req, res) => {
+  res.json({ message: 'API is running' });
+});
+
 // Packages Routes
 
 // GET all packages
-app.get('/api/packages', async (req, res) => {
+app.get(['/api/packages', '/packages'], async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT 
@@ -73,7 +93,7 @@ app.get('/api/packages', async (req, res) => {
 });
 
 // POST new package
-app.post('/api/packages', async (req, res) => {
+app.post(['/api/packages', '/packages'], async (req, res) => {
   const { title, price, pax, vehicle, organizer, image, description, locations, vehicleOptions } = req.body;
   try {
     const result = await pool.query(
@@ -101,7 +121,7 @@ app.post('/api/packages', async (req, res) => {
 });
 
 // PUT update package
-app.put('/api/packages/:id', async (req, res) => {
+app.put(['/api/packages/:id', '/packages/:id'], async (req, res) => {
   const { id } = req.params;
   const { title, price, pax, vehicle, organizer, image, description, locations, vehicleOptions } = req.body;
   try {
@@ -134,7 +154,7 @@ app.put('/api/packages/:id', async (req, res) => {
 });
 
 // DELETE package
-app.delete('/api/packages/:id', async (req, res) => {
+app.delete(['/api/packages/:id', '/packages/:id'], async (req, res) => {
   const { id } = req.params;
   try {
     const result = await pool.query('DELETE FROM packages WHERE id = $1 RETURNING *', [id]);
@@ -151,7 +171,7 @@ app.delete('/api/packages/:id', async (req, res) => {
 // Cars Routes
 
 // GET all cars
-app.get('/api/cars', async (req, res) => {
+app.get(['/api/cars', '/cars'], async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT 
@@ -186,7 +206,7 @@ app.get('/api/cars', async (req, res) => {
 });
 
 // POST new car
-app.post('/api/cars', async (req, res) => {
+app.post(['/api/cars', '/cars'], async (req, res) => {
   const { name, brand, model, year, image, price, transmission, fuelType, seats, category, rating, reviews, status, features, pricePerKm, slabPrice0to100, slabPrice100to200, slabPrice200to300 } = req.body;
   try {
     const result = await pool.query(
@@ -223,13 +243,15 @@ app.post('/api/cars', async (req, res) => {
 });
 
 // PUT update car
-app.put('/api/cars/:id', async (req, res) => {
+app.put(['/api/cars/:id', '/cars/:id'], async (req, res) => {
   const { id } = req.params;
   const { name, brand, model, year, image, price, transmission, fuelType, seats, category, rating, reviews, status, features, pricePerKm, slabPrice0to100, slabPrice100to200, slabPrice200to300 } = req.body;
   try {
     const result = await pool.query(
       `UPDATE cars 
-       SET name = $1, brand = $2, model = $3, year = $4, image = $5, price = $6, transmission = $7, fuel_type = $8, seats = $9, category = $10, rating = $11, reviews_count = $12, status = $13, features = $14, price_per_km = $15, slab_price_0_100 = $16, slab_price_100_200 = $17, slab_price_200_300 = $18
+       SET name = $1, brand = $2, model = $3, year = $4, image = $5, price = $6, transmission = $7, fuel_type = $8, 
+        seats = $9, category = $10, rating = $11, reviews_count = $12, status = $13, features = $14,
+        price_per_km = $15, slab_price_0_100 = $16, slab_price_100_200 = $17, slab_price_200_300 = $18
        WHERE id = $19
        RETURNING 
         id, 
@@ -265,7 +287,7 @@ app.put('/api/cars/:id', async (req, res) => {
 });
 
 // DELETE car
-app.delete('/api/cars/:id', async (req, res) => {
+app.delete(['/api/cars/:id', '/cars/:id'], async (req, res) => {
   const { id } = req.params;
   try {
     const result = await pool.query('DELETE FROM cars WHERE id = $1 RETURNING *', [id]);
@@ -282,7 +304,7 @@ app.delete('/api/cars/:id', async (req, res) => {
 // Testimonials Routes
 
 // GET all testimonials
-app.get('/api/testimonials', async (req, res) => {
+app.get(['/api/testimonials', '/testimonials'], async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM testimonials ORDER BY created_at DESC');
     res.json(result.rows);
@@ -293,7 +315,7 @@ app.get('/api/testimonials', async (req, res) => {
 });
 
 // POST new testimonial
-app.post('/api/testimonials', async (req, res) => {
+app.post(['/api/testimonials', '/testimonials'], async (req, res) => {
   const { name, rating, text, avatar } = req.body;
   try {
     const result = await pool.query(
@@ -310,7 +332,7 @@ app.post('/api/testimonials', async (req, res) => {
 });
 
 // PUT update testimonial
-app.put('/api/testimonials/:id', async (req, res) => {
+app.put(['/api/testimonials/:id', '/testimonials/:id'], async (req, res) => {
   const { id } = req.params;
   const { name, rating, text, avatar } = req.body;
   try {
@@ -332,7 +354,7 @@ app.put('/api/testimonials/:id', async (req, res) => {
 });
 
 // DELETE testimonial
-app.delete('/api/testimonials/:id', async (req, res) => {
+app.delete(['/api/testimonials/:id', '/testimonials/:id'], async (req, res) => {
   const { id } = req.params;
   try {
     const result = await pool.query('DELETE FROM testimonials WHERE id = $1 RETURNING *', [id]);
@@ -349,7 +371,7 @@ app.delete('/api/testimonials/:id', async (req, res) => {
 // Users Routes
 
 // Sync user from Clerk
-app.post('/api/users/sync', async (req, res) => {
+app.post(['/api/users/sync', '/users/sync'], async (req, res) => {
   const { name, email, phone, role } = req.body;
   try {
     // Check if user exists
@@ -377,7 +399,7 @@ app.post('/api/users/sync', async (req, res) => {
 });
 
 // GET all users (for admin)
-app.get('/api/users', async (req, res) => {
+app.get(['/api/users', '/users'], async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM users ORDER BY created_at DESC');
     res.json(result.rows);
