@@ -31,11 +31,14 @@ export default function AppLayout() {
       return true;
     });
 
-    if (sortBy === 'price-low') result.sort((a, b) => a.price - b.price);
-    if (sortBy === 'price-high') result.sort((a, b) => b.price - a.price);
-    if (sortBy === 'rating') result.sort((a, b) => b.rating - a.rating);
+    let sortedResult = [...result]; // Create a shallow copy before sorting
 
-    return result;
+    if (sortBy === 'price-low') sortedResult.sort((a, b) => a.price - b.price);
+    else if (sortBy === 'price-high') sortedResult.sort((a, b) => b.price - a.price);
+    else if (sortBy === 'rating') sortedResult.sort((a, b) => b.rating - a.rating);
+    else if (sortBy === 'featured') sortedResult.sort((a, b) => a.id.localeCompare(b.id)); // Stable sort for featured
+
+    return sortedResult;
   }, [allCars, sortBy]);
 
   return (

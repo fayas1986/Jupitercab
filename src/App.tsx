@@ -65,31 +65,51 @@ const UserSync = () => {
   return null;
 };
 
-const App = () => (
-  <ThemeProvider defaultTheme="light">
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <AppProvider>
-          <UserSync />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/sign-in/*" element={<SignInPage />} />
-            <Route
-              path="/admin"
-              element={
-                <RequireAdmin>
-                  <AdminDashboard />
-                </RequireAdmin>
-              }
-            />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AppProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
-  </ThemeProvider>
-);
+import { HelmetProvider } from 'react-helmet-async';
+import ReactGA from 'react-ga';
+import { useLocation } from 'react-router-dom';
+
+const TRACKING_ID = "YOUR_TRACKING_ID"; // Replace with your Google Analytics tracking ID
+
+const App = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    ReactGA.initialize(TRACKING_ID);
+  }, []);
+
+  useEffect(() => {
+    ReactGA.pageview(location.pathname + location.search);
+  }, [location]);
+
+  return (
+    <HelmetProvider>
+      <ThemeProvider defaultTheme="light">
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <AppProvider>
+              <UserSync />
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/sign-in/*" element={<SignInPage />} />
+                <Route
+                  path="/admin"
+                  element={
+                    <RequireAdmin>
+                      <AdminDashboard />
+                    </RequireAdmin>
+                  }
+                />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AppProvider>
+          </TooltipProvider>
+        </QueryClientProvider>
+      </ThemeProvider>
+    </HelmetProvider>
+  );
+};
 
 export default App;

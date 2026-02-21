@@ -27,17 +27,25 @@ export function BookingModal({ car, isOpen, onClose }: BookingModalProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (step < 3) {
-      setStep(step + 1);
-    } else {
-      alert(`Booking confirmed for ${car.name}! Booking ID: BK${Math.random().toString(36).substr(2, 9).toUpperCase()}`);
-      // Update car status to 'On Ride'
-      setAllCars(prevCars =>
-        prevCars.map(c => (c.id === car.id ? { ...c, status: 'On Ride' } : c))
-      );
-      onClose();
-      setStep(1);
-    }
+    // Directly handle booking confirmation
+    // The WhatsApp routing logic will go here later
+    const whatsappMessage = `
+Hello, I'd like to book the ${car.name}.
+Pick-up Date: ${formData.startDate}
+Return Date: ${formData.endDate}
+Pick-up Location: ${formData.location}
+Total Price: ₹${totalPrice}
+`;
+
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`;
+    window.open(whatsappUrl, '_blank');
+
+    // Update car status to 'On Ride'
+    setAllCars(prevCars =>
+      prevCars.map(c => (c.id === car.id ? { ...c, status: 'On Ride' } : c))
+    );
+    onClose();
+    setStep(1); // Reset step to 1 after booking
   };
 
   const days = formData.startDate && formData.endDate 
@@ -57,8 +65,8 @@ export function BookingModal({ car, isOpen, onClose }: BookingModalProps) {
 
         <div className="p-6">
           <div className="flex justify-between mb-8">
-            {[1, 2, 3].map(s => (
-              <div key={s} className={`flex-1 h-2 rounded ${s <= step ? 'bg-blue-600' : 'bg-gray-200'} ${s < 3 ? 'mr-2' : ''}`} />
+            {[1].map(s => ( // Only one step
+              <div key={s} className={`flex-1 h-2 rounded ${s <= step ? 'bg-blue-600' : 'bg-gray-200'} ${s < 1 ? 'mr-2' : ''}`} />
             ))}
           </div>
 
@@ -102,52 +110,6 @@ export function BookingModal({ car, isOpen, onClose }: BookingModalProps) {
               </div>
             )}
 
-            {step === 2 && (
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <Shield className="w-5 h-5" /> Insurance & Add-ons
-                </h3>
-                <label className="flex items-start gap-3 p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
-                  <input
-                    type="checkbox"
-                    checked={formData.insurance}
-                    onChange={(e) => setFormData({...formData, insurance: e.target.checked})}
-                    className="w-5 h-5 mt-1"
-                  />
-                  <div>
-                    <div className="font-semibold">Premium Insurance</div>
-                                     <div className="text-sm text-gray-600">Full coverage with zero deductible - ₹15/day</div>
-                  </div>
-                </label>
-              </div>
-            )}
-
-            {step === 3 && (
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <CreditCard className="w-5 h-5" /> Payment
-                </h3>
-                <div>
-                  <label className="block font-semibold mb-2">Card Number</label>
-                  <input type="text" required placeholder="1234 5678 9012 3456" className="w-full px-4 py-2 border rounded-lg" />
-                </div>
-                <div>
-                  <label className="block font-semibold mb-2">Cardholder Name</label>
-                  <input type="text" required placeholder="John Doe" className="w-full px-4 py-2 border rounded-lg" />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block font-semibold mb-2">Expiry</label>
-                    <input type="text" required placeholder="MM/YY" className="w-full px-4 py-2 border rounded-lg" />
-                  </div>
-                  <div>
-                    <label className="block font-semibold mb-2">CVV</label>
-                    <input type="text" required placeholder="123" className="w-full px-4 py-2 border rounded-lg" />
-                  </div>
-                </div>
-              </div>
-            )}
-
             <div className="mt-8 p-4 bg-gray-50 rounded-lg">
               <div className="flex justify-between mb-2">
                 <span>Daily Rate:</span>
@@ -177,7 +139,7 @@ export function BookingModal({ car, isOpen, onClose }: BookingModalProps) {
               type="submit"
               className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold text-lg"
             >
-              {step === 3 ? 'Confirm Booking' : 'Continue'}
+              Confirm Booking
             </button>
           </form>
         </div>

@@ -25,21 +25,18 @@ export function Testimonials() {
 
               <p className="text-gray-700 mb-6 italic">"{testimonial.text}"</p>
 
-              <div className="flex items-center gap-3">
-                {testimonial.avatar && (testimonial.avatar.startsWith('data:') || testimonial.avatar.startsWith('http')) ? (
-                  <img 
-                    src={testimonial.avatar} 
-                    alt={testimonial.name} 
-                    className="w-12 h-12 rounded-full object-cover border border-gray-200"
-                  />
-                ) : (
-                  <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
-                    {testimonial.avatar}
-                  </div>
-                )}
-                <div>
-                  <div className="font-bold text-gray-900">{testimonial.name}</div>
-                </div>
+              {/* Large image for the testimonial content */}
+              {testimonial.avatar && (testimonial.avatar.startsWith('data:') || testimonial.avatar.startsWith('http')) && (
+                <img 
+                  src={testimonial.avatar} 
+                  alt="Testimonial content" 
+                  className="w-full h-auto mb-4 rounded-lg" 
+                />
+              )}
+
+              {/* Section for the person's avatar and name */}
+              <div className="flex items-center gap-3 mt-4">
+                <div className="font-bold text-gray-900">{testimonial.name}</div>
               </div>
             </div>
           ))}

@@ -7,6 +7,20 @@ import { fileURLToPath } from 'url';
 
 dotenv.config();
 
+// Global unhandled exception handler
+process.on('uncaughtException', (err) => {
+  console.error('Unhandled Exception:', err);
+  // Optionally, perform graceful shutdown here
+  // process.exit(1); // Exit with a failure code
+});
+
+// Global unhandled promise rejection handler
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  // Optionally, perform graceful shutdown here
+  // process.exit(1); // Exit with a failure code
+});
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -103,7 +117,7 @@ app.get(['/api/packages', '/packages'], async (req, res) => {
     `);
     res.json(result.rows);
   } catch (err) {
-    console.error(err);
+    console.error(err.stack);
     res.status(500).json({ error: 'Server error' });
   }
 });
